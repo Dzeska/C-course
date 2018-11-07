@@ -1,0 +1,131 @@
+#include <iostream>
+
+using namespace std;
+void createEmployee();
+
+
+class Date
+{
+    public:
+        int day;
+        int month;
+        int year;
+
+        bool isValid()
+        {
+            if (day == 0 || month == 0 || year == 0000)
+            {
+                return false;
+            }
+            else return true;
+        }
+};
+
+class Employee
+{
+    public:
+        string name;
+        string firstName;
+        Date birthday;
+        Date holidays[32];
+
+        // Gibt true zurueck, wenn in dem Objekt ein Mitarbeiter existiert
+        bool isValid()
+        {
+            if (name.compare("") == 0) return false;
+            else return true;
+        }
+
+        void setValues(string name, string firstName, int day, int month, int year)
+        {
+            this->name = name;
+            this->firstName = firstName;
+            this->birthday.day = day;
+            this->birthday.month = month;
+            this->birthday.year = year;
+        }
+
+
+};
+
+Employee employees[500];
+
+void createEmployee()
+{
+    cout << "Um einen neuen Mitarbeiter zu erstellen, druecken Sie n" << endl;
+    string n;
+    cin >> n;
+    if (n == "n")
+    {
+
+    cout << "Nachname: ";
+    string name;
+    cin >> name;
+    cout << endl;
+
+    cout << "Vorname: ";
+    string firstName;
+    cin >> firstName;
+    cout << endl;
+
+    cout << "Geburtsdatum - Tag: ";
+    int day;
+    cin >> day;
+    cout << endl;
+
+    cout << "Geburtsdatum - Monat in Ziffern: ";
+    int month;
+    cin >> month;
+    cout << endl;
+
+    cout << "Geburtsdatum - Jahr: ";
+    int year;
+    cin >> year;
+    cout << endl;
+
+
+      for (int i = 0; i < 500; i++)
+      {
+        if (employees[i].isValid() == 0)
+        {
+            /*employees[i].name = name;
+            employees[i].firstName = firstName;
+            employees[i].birthday.day = day;
+            employees[i].birthday.month = month;
+            employees[i].birthday.year = year; */
+
+            employees[i].setValues(name, firstName, day, month, year);
+            break;
+        }
+        else cout << "Fehlermeldung" << endl;
+      }
+    }
+}
+
+void allEmployees()
+{
+    for (int i = 0; i < 500; i++)
+    {
+        if (employees[i].isValid())
+        {
+            cout << employees[i].name << endl;
+        }
+    }
+
+}
+
+
+int main()
+{
+    employees[5].birthday = {02, 02, 1990};
+    employees[5].name = "Mueller";
+    createEmployee();
+    allEmployees();
+    cout << employees[5].isValid() << endl;
+    cout << employees[5].name << endl;
+    cout << employees[4].isValid() << endl;
+    cout << employees[5].birthday.day << endl;
+    cout << employees[5].birthday.day << "." << employees[5].birthday.month << "." << employees[5].birthday.year << endl;
+    cout << employees[5].birthday.isValid() << endl;
+    return 0;
+}
