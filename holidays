@@ -102,6 +102,34 @@ void createEmployee()
     }
 }
 
+void deleteEmployee()
+{
+    cout << "Um einen bestehenden Mitarbeiter zu loeschen, druecken Sie d" << endl;
+    string d;
+    cin >> d;
+    if (d == "d")
+    {
+        cout << "Nachnamem des Mitarbeiters eingeben" << endl;
+        string name;
+        cin >> name;
+        for (int i = 0; i < 500; i++)
+        {
+            if (employees[i].name == name)
+            {
+                // cout << "Great!" << endl;
+                employees[i].name = "";
+                employees[i].firstName = "";
+                employees[i].birthday.day = 0;
+                employees[i].birthday.month = 0;
+                employees[i].birthday.year = 0;
+            }
+                
+        }
+
+    }
+}
+
+
 void allEmployees()
 {
     for (int i = 0; i < 500; i++)
