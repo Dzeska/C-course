@@ -1,9 +1,9 @@
+
 #include <iostream>
 
 using namespace std;
-void createEmployee();
 
-// commeintar:
+
 
 class Date
 {
@@ -28,7 +28,11 @@ class Employee
         string name;
         string firstName;
         Date birthday;
-        Date holidays[32];
+        int holidays;
+
+
+
+
 
         // Gibt true zurueck, wenn in dem Objekt ein Mitarbeiter existiert
         bool isValid()
@@ -37,13 +41,14 @@ class Employee
             else return true;
         }
 
-        void setValues(string name, string firstName, int day, int month, int year)
+        void setValues(string name, string firstName, int day, int month, int year, int holidays)
         {
             this->name = name;
             this->firstName = firstName;
             this->birthday.day = day;
             this->birthday.month = month;
             this->birthday.year = year;
+            this->holidays = holidays;
         }
 
 
@@ -53,12 +58,6 @@ Employee employees[500];
 
 void createEmployee()
 {
-    cout << "Um einen neuen Mitarbeiter zu erstellen, druecken Sie n" << endl;
-    string n;
-    cin >> n;
-    if (n == "n")
-    {
-
     cout << "Nachname: ";
     string name;
     cin >> name;
@@ -84,33 +83,35 @@ void createEmployee()
     cin >> year;
     cout << endl;
 
+    int holidays;
+    if ((2018 - year) > 49)
+    {
+        holidays = 32;
+    }
+    else holidays = 30;
+    cout << "Sie haben " << holidays << " Urlaubstage." << endl;
+
 
       for (int i = 0; i < 500; i++)
       {
-        if (employees[i].isValid() == 0)
+        if (employees[i].isValid() == false)
         {
-            /*employees[i].name = name;
+            /* Alternative:
+            employees[i].name = name;
             employees[i].firstName = firstName;
             employees[i].birthday.day = day;
             employees[i].birthday.month = month;
             employees[i].birthday.year = year; */
 
-            employees[i].setValues(name, firstName, day, month, year);
+            employees[i].setValues(name, firstName, day, month, year, holidays);
             break;
         }
-        else cout << "Fehlermeldung" << endl;
       }
-    }
 }
 
 void deleteEmployee()
 {
-    cout << "Um einen bestehenden Mitarbeiter zu loeschen, druecken Sie d" << endl;
-    string d;
-    cin >> d;
-    if (d == "d")
-    {
-        cout << "Nachnamem des Mitarbeiters eingeben" << endl;
+        cout << "Nachname: ";
         string name;
         cin >> name;
         for (int i = 0; i < 500; i++)
@@ -124,37 +125,81 @@ void deleteEmployee()
                 employees[i].birthday.month = 0;
                 employees[i].birthday.year = 0;
             }
-                
         }
+}
 
+void printOneEmployee()
+{
+    cout << "Nachname: ";
+    string name;
+    cin >> name;
+    for (int i = 0; i < 500; i++)
+    {
+        if (employees[i].name == name)
+        {
+            cout << employees[i].firstName << " " << employees[i].name << ", " << employees[i].birthday.day
+            << "." << employees[i].birthday.month << "." << employees[i].birthday.year << ", Resturlaub: " << employees[i].holidays << " Tage" << endl;
+        }
     }
 }
 
-
-void allEmployees()
+void printAllEmployees()
 {
     for (int i = 0; i < 500; i++)
     {
         if (employees[i].isValid())
         {
-            cout << employees[i].name << endl;
+            cout << employees[i].firstName << " " << employees[i].name << ", " << employees[i].birthday.day
+            << "." << employees[i].birthday.month << "." << employees[i].birthday.year << ", Resturlaub: " << employees[i].holidays << " Tage" << endl;
         }
     }
 
 }
 
 
+void takeHoliday()
+{
+    cout << "Nachname: ";
+    string name;
+    cin >> name;
+
+    cout << "Wie viele Tage moechten Sie Urlaub nehmen? " << endl;
+    int holidays;
+    cin >> holidays;
+    for (int i = 0; i < 500; i++)
+    {
+        if (employees[i].name == name)
+        {
+            cout << "Buchung erfolgreich! Ihr Resturlaub: " << (employees[i].holidays - holidays) << " Tage" << endl;
+            employees[i].holidays -= holidays;
+        }
+    }
+}
+
+void printHelp()
+{
+    cout << "Wenn Sie einen neuen Mitarbeiter anlegen wollen, druecken Sie n. "
+         << "Wenn Sie einen existierenden Mitarbeiter loeschen wollen, druecken Sie d. "
+         << "Wenn Sie neue Urlaubstage hinzufuegen wollen, druecken Sie h. Wenn Sie sich einen Mitarbeiter "
+         << "mit der Anzahl seiner Urlaubstage anzeigen lassen wollen, druecken Sie s. Zur Auflistung aller "
+         << "Mitarbeiter, druecken Sie a. Wenn Sie das Programm beenden wollen, druecken Sie x" << endl;
+}
+
 int main()
 {
-    employees[5].birthday = {02, 02, 1990};
-    employees[5].name = "Mueller";
-    createEmployee();
-    allEmployees();
-    cout << employees[5].isValid() << endl;
-    cout << employees[5].name << endl;
-    cout << employees[4].isValid() << endl;
-    cout << employees[5].birthday.day << endl;
-    cout << employees[5].birthday.day << "." << employees[5].birthday.month << "." << employees[5].birthday.year << endl;
-    cout << employees[5].birthday.isValid() << endl;
+    cout << "Willkommen bei der Urlaubsverwaltung!" << endl;
+    while (true)
+    {
+        cout << "Wenn Sie die verschiedenen Auswahlmoeglichkeiten sehen wollen, geben Sie einfach \"Hilfe\" ein. " << endl;
+        string eingabe;
+        cin >> eingabe;
+        if (eingabe == "Hilfe") printHelp();
+        if (eingabe == "n") createEmployee();
+        else if (eingabe == "d") deleteEmployee();
+        else if (eingabe == "h") takeHoliday();
+        else if (eingabe == "s") printOneEmployee();
+        else if (eingabe == "a") printAllEmployees();
+        else if (eingabe == "x") break;
+    }
     return 0;
 }
