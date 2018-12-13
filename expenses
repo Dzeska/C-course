@@ -1,0 +1,86 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+using namespace std;
+
+class Expense
+{
+    public:
+    int id;
+    int month;
+    int amount;
+    string category;
+
+    Expense* successor;
+
+    Expense(int id, int month, int amount, string category)
+    {
+    this->id = id;
+    this->month = month;
+    this->amount = amount;
+    this->category = category;
+    }
+} ;
+
+class ListOfExpenses
+{
+    public:
+    Expense * head;
+    ListOfExpenses(): head(0) {};
+
+
+    void insert(Expense * newElement)
+     {
+        // Der Nachfolger des neuen Elements
+        // zeigt auf das Element, auf das bisher noch der Kopfzeiger zeigt
+        newElement->successor = head;
+        // der Kopfzeiger zeigt nun auf das neue Element
+        head = newElement;
+
+     }
+
+
+     Expense* remove(int id)
+     {
+        if(head == 0) {
+            return 0;
+        }
+
+        if(head->id == id) {
+            Expense* tmp = head;
+            head = head->successor;
+            return tmp;
+        }
+        Expense* drag =  head;
+        Expense* current = head->successor;
+        while(current != 0) {
+            if(current->id == id) {
+                // dann loesche
+                drag->successor = current->successor;
+                return current;
+            } else {
+                drag = current;
+                current = current->successor;
+            }
+        }
+
+        return 0;
+     }
+};
+
+
+
+
+int main()
+{
+
+
+    Expense expense(1, 1, 1, "hi");
+    //list <Expense> ListOfExpenses;
+    //cout << expense.category << endl;
+
+
+    cout << "Hello world!" << endl;
+    return 0;
+}
