@@ -6,14 +6,17 @@ using namespace std;
 
 class Expense
 {
+
     public:
     int id;
     int month;
     int amount;
     string category;
 
-    Expense* successor;
+    // Pointer auf potentiellen Nachfolger
+    Expense* successor = 0;
 
+    // Konstruktor, um neue Onjekte zu erzeugen
     Expense(int id, int month, int amount, string category)
     {
     this->id = id;
@@ -26,7 +29,11 @@ class Expense
 class ListOfExpenses
 {
     public:
+
+    // Zeiger auf das potentiell erste Element in der Liste
     Expense * head;
+
+    // am Anfang ist die Liste leer
     ListOfExpenses(): head(0) {};
 
 
@@ -35,6 +42,7 @@ class ListOfExpenses
         // Der Nachfolger des neuen Elements
         // zeigt auf das Element, auf das bisher noch der Kopfzeiger zeigt
         newElement->successor = head;
+
         // der Kopfzeiger zeigt nun auf das neue Element
         head = newElement;
 
@@ -43,22 +51,39 @@ class ListOfExpenses
 
      Expense* remove(int id)
      {
+
+        // wenn die Liste leer ist, kann nichts entfernt werden
         if(head == 0) {
             return 0;
         }
 
+
+        // wenn das erste Element geloescht werden soll
         if(head->id == id) {
+
+            // speichern des Zeigers auf das erste (zu entfernende) Element
             Expense* tmp = head;
+
+            // Kopfzeiger zeigt jetzt auf zweites Element
             head = head->successor;
+
+            // gibt entferntes Element zurueck
             return tmp;
         }
+
+        // Zeiger auf den Vorgaenger des aktuellen Elements
         Expense* drag =  head;
+
+        // Zeiger auf aktuelles Element
         Expense* current = head->successor;
+
         while(current != 0) {
             if(current->id == id) {
-                // dann loesche
+                // dann loesche -> Zeiger zeigt jetzt von Vorgaenger auf Nachfolger
                 drag->successor = current->successor;
                 return current;
+
+            // sonst gehe weiter in der Liste
             } else {
                 drag = current;
                 current = current->successor;
@@ -69,18 +94,190 @@ class ListOfExpenses
      }
 };
 
+// legt eine neue Liste l vom Typ ListOfExpenses an
+ListOfExpenses l;
+
+// Gibt alle moeglichen Optionen aus
+void printOptions() {
+    cout << "Um eine Rechnung aufzunehmen, druecken Sie r." << endl
+    << "Um alle Ausgaben anzuzeigen, druecken Sie a." << endl
+    << "Um eine Rechnung zu loeschen, druecken Sie l." << endl
+    << "Um das Programm zu beenden, druecken Sie x." << endl
+    << endl;
+}
+
+
+
+string chooseCategory() {
+    cout << "Kategorien: " << endl
+    << "Kleidung: waehle 1" << endl
+    << "Haustiere: waehle 2" << endl
+    << "Essen: waehle 3" << endl
+    << "Hobby: waehle 4" << endl
+    << "Auto: waehle 5" << endl
+    << "Kinder: waehle 6" << endl
+    << "Spenden: waehle 7" << endl
+    << "Reisen: waehle 8" << endl
+    << endl;
+
+
+    string category;
+    int c;
+
+
+    do {
+    cin >> c;
+
+    if (c == 1) category = "Kleidung";
+    else if (c == 2) category = "Haustiere";
+    else if (c == 3) category = "Essen";
+    else if (c == 4) category = "Hobby";
+    else if (c == 5) category = "Auto";
+    else if (c == 6) category = "Kinder";
+    else if (c == 7) category = "Spenden";
+    else if (c == 8) category = "Reisen";
+    } while (c < 1 || c > 8);
+
+    return category;
+}
+
+
+void addExpense() {
+
+    static int nextId = 1;
+
+    cout << "Monat in Zahlen: ";
+    int month;
+    cin >> month;
+
+    cout << "Betrag in Euro: ";
+    int amount;
+    cin >> amount;
+
+    int id = nextId;
+    nextId += 1;
+
+    string category = chooseCategory();
+
+    // Aufrufen des Konstruktors
+    Expense* myExpense = new Expense(id, month, amount, category);
+
+    // neues Objekt in die Liste l einfuegen
+    l.insert(myExpense);
+
+    cout << "Die Rechnung " << id << " wurde angelegt." << endl;
+}
+
+void deleteExpense() {
+
+    cout << "Rechnungsnummer: " << endl;
+    int number;
+    cin >> number;
+
+    // aufraeumen (Speicher freimachen)
+    delete l.remove(number);
+
+    cout << "Die Rechnung " << number << " wurde entfernt." << endl;
+
+}
+
+string months[] = {"Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"};
+
+void printAll() {
+
+    for (int i = 0; i < 12; i++) {
+
+        string month = months[i];
+
+        // Deklaration und Initialisierung mit 0, da sonst Zufallswerte ausgegeben werden
+        int sumKleidung = 0;
+        int sumHaustiere = 0;
+        int sumEssen = 0;
+        int sumHobby = 0;
+        int sumAuto = 0;
+        int sumKinder = 0;
+        int sumSpenden = 0;
+        int sumReisen = 0;
+
+        // speichert die Adresse, die auf das erste Element der Liste zeigt, nochmal in der Variable current
+        Expense* current = l.head;
+
+        // laeuft von Anfang bis Ende der Liste
+        while (current != 0) {
+
+        // Ausgaben jeden Monat, sortiert nach Kategorien
+        if(current->month == i+1) {
+
+
+            if(current->category == "Kleidung") {
+                sumKleidung += current->amount;
+
+            } else if(current->category == "Haustiere") {
+                sumHaustiere += current->amount;
+
+            } else if(current->category == "Essen") {
+                sumEssen += current->amount;
+
+            } else if(current->category == "Hobby") {
+                sumHobby += current->amount;
+
+            } else if(current->category == "Auto") {
+                sumAuto += current->amount;
+
+            } else if(current->category == "Kinder") {
+                sumKinder += current->amount;
+
+            } else if(current->category == "Spenden") {
+                sumSpenden += current->amount;
+
+            } else sumReisen += current->amount;
+
+            }
+            current = current->successor;
+
+        }
+
+        cout << month << endl;
+        cout << "Kleidung: " << sumKleidung << " Euro" << endl;
+        cout << "Haustiere: " << sumHaustiere << " Euro" << endl;
+        cout << "Essen: " << sumEssen << " Euro" << endl;
+        cout << "Hobby: " << sumHobby << " Euro" << endl;
+        cout << "Auto: " << sumAuto << " Euro" << endl;
+        cout << "Kinder: " << sumKinder << " Euro" << endl;
+        cout << "Spenden: " << sumSpenden << " Euro" << endl;
+        cout << "Reisen: " << sumReisen << " Euro" << endl;
+
+        int sum;
+        sum = sumKleidung + sumHaustiere + sumEssen + sumHobby + sumAuto + sumKinder + sumSpenden + sumReisen;
+
+        cout << "Gesamt: " << sum << " Euro" << endl << endl;
+
+        if (sum > 500) cout << "Mehr ausgegeben als geplant!" << endl << endl << endl;
+
+
+
+    }
+
+}
 
 
 
 int main()
 {
 
+    while (true) {
+        cout << "Ausgabenverwaltung. Um die Wahlmoeglichkeiten zu sehen, druecken Sie w." << endl;
+        string input;
+        cin >> input;
+        cout << endl;
+        if (input == "w") printOptions();
+        else if (input == "r") addExpense();
+        else if (input == "a") printAll();
+        else if (input == "l") deleteExpense();
+        else if (input == "x") break;
+        cout << endl;
 
-    Expense expense(1, 1, 1, "hi");
-    //list <Expense> ListOfExpenses;
-    //cout << expense.category << endl;
+    }
 
-
-    cout << "Hello world!" << endl;
     return 0;
 }
