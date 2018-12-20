@@ -1,0 +1,221 @@
+#include <iostream>
+#include <fstream>
+#include <list>
+#include <iterator>
+#include <cstdlib>
+
+using namespace std;
+
+
+class Address {
+
+    public:
+    string street, town;
+    int house, postcode;
+
+    Address() {}
+    Address(string s, int h, int p, string t): street(s), house(h), postcode(p), town(t) {}
+    friend istream& operator>> (istream& is, Address& a);
+    friend ostream& operator<< (ostream& os, const Address& a);
+
+} ;
+
+class Customer {
+
+    public:
+    string name, firstName;
+    Address address;
+    int yearOfBirth;
+    int phoneNumber;
+    string license;
+
+    Customer() {}
+    Customer(string n, string f, Address a, int y, int ph, string l): name(n), firstName(f), address(a), yearOfBirth(y), phoneNumber(ph), license(l) {}
+    friend istream& operator>> (istream& is, Customer& c);
+    friend ostream& operator<< (ostream& os, const Customer& c);
+
+} ;
+
+// ueberladen des Einlese-Operaors >>
+istream& operator>> (istream& is, Customer& c) {
+
+    cout << endl << "Nachname: ";
+    // einlesen in is und speichern in c.name
+    is >> c.name;
+    cout << "Vorname: ";
+    is >> c.firstName;
+    cout << "Adresse: ";
+    is >> c.address;
+    cout << "Geburtsjahr: ";
+    is >> c.yearOfBirth;
+    cout << "Telefonnummer: ";
+    is >> c.phoneNumber;
+    cout << "Fuehrerscheinklasse: ";
+    is >> c.license;
+
+    return is;
+}
+
+istream& operator>> (istream& is, Address& a) {
+
+    cout << endl << "Strasse: ";
+    is >> a.street;
+    cout << "Hausnummer: ";
+    is >> a.house;
+    cout << "PLZ: ";
+    is >> a.postcode;
+    cout << "Ort: ";
+    is >> a.town;
+
+    return is;
+
+}
+
+ostream& operator<< (ostream& os, const Customer& c) {
+
+    os << endl << "Kunde: " << c.name << ", " << c.firstName << endl;
+    os << c.address << endl;
+    os << "Geburtsjahr: " << c.yearOfBirth << endl;
+    os << "Telefonnummer: " << c.phoneNumber << endl;
+    os << "Fuehrerscheinklasse: " << c.license << endl;
+
+ return os;
+}
+
+ostream& operator<< (ostream& os, const Address& a) {
+
+    os << "Adresse: " << a.street << " " << a.house << ", " << a.postcode << " " << a.town;
+
+}
+
+list<Customer> listOfCustomers;
+
+
+
+
+void showList() {
+
+cout << "Kundenliste: " << endl << endl;
+  for (list<Customer>::iterator it = listOfCustomers.begin(); it != listOfCustomers.end(); it++)
+    cout << *it << ' ';
+
+  cout << '\n';
+
+
+}
+
+void createCustomer() {
+
+    Customer c;
+    cin >> c;
+    listOfCustomers.push_back(c);
+}
+
+void printHelp() {
+
+    cout << "Um einen neuen Kunden anzulegen, geben Sie n ein. "
+    << "Um die Kundenliste zu sehen, geben Sie l ein. "
+    << "Um ein Motorrad zu buchen, geben Sie r ein. "
+    << "Um das Programm zu beenden, geben Sie x ein. "<< endl;
+
+}
+
+
+string suzuki = "Suzuki Bandit";
+string honda = "Honda TransAlp";
+string bmw = "BMW F 650 GS";
+string kawasaki = "Kawasaki ZZR1400";
+
+
+void showOptions() {
+
+    cout << "Es stehen folgende Motorraeder zur Auswahl: " << endl;
+    cout << suzuki << " (Eingabe suzuki), " << honda << " (Eingabe honda), " << bmw << " (Eingabe bmw) oder " << kawasaki << " (Eingabe kawasaki)." << endl;
+}
+
+
+
+void bookBike() {
+
+
+    cout << "Bitte geben Sie Ihren Nachnamen ein: ";
+    string input;
+    cin >> input;
+
+    for (list<Customer>::iterator it = listOfCustomers.begin(); it != listOfCustomers.end(); it++) {
+
+        fstream f;
+
+        // laeuft durch die Liste und sucht nach dem eingegebenen Namen
+        if (it->name == input) {
+
+            // kontrolliert, ob der Kunde die erforderliche Fuehrerscheinklasse besitzt
+            if (it->license == "A") {
+
+            showOptions();
+            string input;
+            cin >> input;
+
+                if (input == "suzuki") {
+
+                    // oeffnet die Datei reservierungen.txt zum schreiben und haengt das Geschriebene am Ende an
+                    f.open("reservierungen.txt", ios::out | ios::app);
+                    f << "Reservierung  " << suzuki << " fuer " << it->name << ", " << it->firstName << endl;
+                    f.close();
+                    cout << "Das Motorrad " << suzuki << " wurde erfolgreich reserviert. " << endl;
+                }
+
+                else if (input == "honda") {
+
+                    f.open("reservierungen.txt", ios::out | ios::app);
+                    f << "Reservierung  " << honda << " fuer " << it->name << ", " << it->firstName << endl;
+                    f.close();
+                    cout << "Das Motorrad " << honda << " wurde erfolgreich reserviert. " << endl;
+                }
+
+                else if (input == "bmw") {
+
+                    f.open("reservierungen.txt", ios::out | ios::app);
+                    f << "Reservierung  " << bmw << " fuer " << it->name << ", " << it->firstName << endl;
+                    f.close();
+                    cout << "Das Motorrad " << bmw << " wurde erfolgreich reserviert. " << endl;
+
+                }
+
+                else if (input == "kawasaki") {
+
+                    f.open("reservierungen.txt", ios::out | ios::app);
+                    f << "Reservierung  " << kawasaki << " fuer " << it->name << ", " << it->firstName << endl;
+                    f.close();
+                    cout << "Das Motorrad " << kawasaki << " wurde erfolgreich reserviert. " << endl;
+
+                }
+
+            } else cout << "Sie sind leider nicht im Besitz der erforderlichen Fuehrerscheinklasse. " << endl;
+            return;
+        }
+
+    } cout << "Dieser Kunde wurde leider nicht gefunden. Geben Sie n ein, um einen neuen Kunden anzulegen. " << endl;
+
+}
+
+
+
+
+int main()
+{
+
+
+    cout << "Motorradverwaltung" << endl;
+    while(true) {
+    cout << "Um die Auswahl zu sehen, geben Sie h ein. ";
+    string eingabe;
+    cin >> eingabe;
+    if (eingabe == "h") printHelp();
+    else if (eingabe == "n") createCustomer();
+    else if (eingabe == "l") showList();
+    else if (eingabe == "r") bookBike();
+    else if (eingabe == "x") break;
+    }
+    return 0;
+}
